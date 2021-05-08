@@ -6,9 +6,8 @@ import compression from 'compression'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env } from '../config'
-import routes from '../api'
 
-module.exports = function (app) {
+module.exports = function (app, routes) {
   /* istanbul ignore next */
   if (env === 'production' || env === 'development') {
     app.use(cors())

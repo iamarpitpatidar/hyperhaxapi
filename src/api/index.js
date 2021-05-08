@@ -1,22 +1,12 @@
 import { Router } from 'express'
-import user from './user'
+import main from './main'
 import auth from './auth'
+import user from './user'
 
 const router = new Router()
 
-router.use('/users', user)
+router.use('/', main)
 router.use('/auth', auth)
-
-router.get('/', (req, res) => {
-  res.json({
-    status: 'ok',
-    jussi_tag: Math.random().toString(32).substring(2, 15),
-    author: {
-      name: 'Arpit Patidar',
-      email: 'arpit.prdr@hotmail.com',
-      discord: 'arpit#8586'
-    }
-  }).end()
-})
+router.use('/users', user)
 
 export default router
