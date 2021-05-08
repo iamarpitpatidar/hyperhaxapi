@@ -13,4 +13,8 @@ router.get('/', (req, res) => {
   }).end()
 })
 
+router.post('/', (req, res) => {
+  res.status(405).end()
+})
+
 export default router

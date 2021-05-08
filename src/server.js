@@ -2,13 +2,12 @@ import express from 'express'
 import { env, port } from './config'
 import services from './services'
 import logger from './services/logger'
-import routes from './api'
 
 (async function () {
   const app = express()
 
   // Loading all the required services
-  await services(app, routes)
+  await services(app)
 
   app.listen(port, error => {
     if (error) {

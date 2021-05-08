@@ -1,14 +1,23 @@
 import request from 'supertest'
 import express from 'express'
-import server from '../../services/express'
 import routes from './index'
 
-const app = server(express())
+const app = express()
+app.use('/', routes)
 
 test('GET / 200', async () => {
-  const { status, body } = await request(app())
+  const { status, body } = await request(app)
     .get('/')
+
   expect(status).toBe(200)
-  expect(Array.isArray(body.rows)).toBe(true)
-  expect(Number.isNaN(body.count)).toBe(false)
+  expect(typeof body).toBe('object')
+  expect(body).not.toBe(null)
+  expect(body.status).toBe('ok')
+})
+
+test('Post / 405', async () => {
+  const { status } = await request(app)
+    .post('/')
+
+  expect(status).toBe(405)
 })
