@@ -5,7 +5,7 @@
   "main": "src",
   "scripts": {
     "test": "jest",
-    "coverage": "yarn test -- --coverage",
+    "coverage": "jest --coverage",
     "dev": "nodemon src",
     "prod": "cross-env NODE_ENV=production nodemon -r dotenv-safe/config src",
     "lint": "eslint src"
