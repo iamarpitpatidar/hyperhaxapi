@@ -1,10 +1,10 @@
 import { Router } from 'express'
+import user from './user'
+import auth from './auth'
 
 const router = new Router()
 
-router.get('/', (req, res) => {
-  res.header('Content-type', 'text/html')
-  return res.end('<h1>Hello, Secure World!</h1>')
-})
+router.use('/users', user)
+router.use('/auth', auth)
 
 export default router
