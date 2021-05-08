@@ -3,6 +3,7 @@ public
 .tmp
 .idea
 .log
+logs
 dist
 docs
 .env
