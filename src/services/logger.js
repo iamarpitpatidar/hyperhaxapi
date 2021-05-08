@@ -1,31 +1,25 @@
-import winston from 'winston'
+import { createLogger, format, transports } from 'winston'
 import { logs } from '../config'
+const { combine, timestamp, printf } = format
 
-const transports = []
-if (process.env.NODE_ENV !== 'development') {
-  transports.push(new winston.transports.Console())
-} else {
-  transports.push(
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.cli(),
-        winston.format.splat()
-      )
-    })
-  )
-}
-
-const loggerInstance = winston.createLogger({
+const loggerInstance = createLogger({
   level: logs.level,
-  format: winston.format.combine(
-    winston.format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
-    }),
-    winston.format.errors({ stack: true }),
-    winston.format.splat(),
-    winston.format.json()
+  format: combine(
+    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    format.errors({ stack: true }),
+    format.splat()
   ),
-  transports
+  transports: [
+    new transports.File({
+      filename: './logs/combined.log',
+      format: combine(printf(info => `[${info.timestamp}] ${info.level}: ${info.message}`))
+    }),
+    new transports.Console({
+      format: combine(
+        format.colorize(),
+        printf(info => `[${info.timestamp}] ${info.level}: ${info.message}`))
+    })
+  ]
 })
 
 module.exports = loggerInstance

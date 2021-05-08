@@ -1,5 +1,6 @@
 import cors from 'cors'
 import morgan from 'morgan'
+import helmet from 'helmet'
 import bodyParser from 'body-parser'
 import compression from 'compression'
 import { errorHandler as queryErrorHandler } from 'querymen'
@@ -13,6 +14,7 @@ module.exports = function (app) {
     app.use(cors())
     app.use(compression())
     app.use(morgan('dev'))
+    app.use(helmet())
   }
 
   app.use(bodyParser.urlencoded({ extended: false }))
