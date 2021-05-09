@@ -1,9 +1,8 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
-// import { subscription as subscriptionAuth } from '../../services/passport'
-import { create } from './controller'
 import { schema } from './model'
-import { checkSubscriptionCode } from './helpers'
+import { create } from './controller'
+import { validate as validateSubscription } from '../subscription/controller'
 export User, { schema } from './model'
 
 const router = new Router()
@@ -15,7 +14,9 @@ router.route('/')
   })
   .post(
     body({ username, password, inviteCode }),
-    checkSubscriptionCode,
-    create)
+    validateSubscription,
+    ({ bodymen: { body } }) => {
+      console.log(body)
+    })
 
 export default router

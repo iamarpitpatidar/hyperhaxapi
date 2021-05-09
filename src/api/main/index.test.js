@@ -10,8 +10,6 @@ test('GET / 200', async () => {
     .get('/')
 
   expect(status).toBe(200)
-  expect(typeof body).toBe('object')
-  expect(body).not.toBe(null)
   expect(body.status).toBe('ok')
 })
 

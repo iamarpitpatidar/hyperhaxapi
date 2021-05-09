@@ -1,6 +1,6 @@
 {
   "name": "hyperhaxapi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "main": "src",
   "scripts": {
@@ -30,7 +30,8 @@
     "mongoose-keywords": "^0.4.1",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
-    "querymen": "^2.1.4"
+    "querymen": "^2.1.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
