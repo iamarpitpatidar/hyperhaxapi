@@ -1,10 +1,9 @@
 import { Router } from 'express'
-import { success as sendSuccess, error as sendError } from '../../services/response'
 const router = new Router()
 
 router.route('/')
   .get((req, res) => {
-    sendSuccess(res, {
+    res.status(200).json({
       status: 'ok',
       jussi_tag: Math.random().toString(32).substring(2, 15),
       author: {
@@ -15,9 +14,9 @@ router.route('/')
     })
   })
   .post((req, res) => {
-    sendError(res, {
-      statusCode: 405,
-      message: 'Method not allowed'
+    res.status(405).json({
+      message: 'Method not allowed',
+      requestId: Math.random().toString(32).substring(2)
     })
   })
 

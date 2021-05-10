@@ -2,7 +2,11 @@ import { Router } from 'express'
 import { middleware as body } from 'bodymen'
 import { schema } from './model'
 import { create } from './controller'
-import { validate as validateSubscription, addToRequest as addSubscriptionToRequestBody } from '../subscription/controller'
+import {
+  validate as validateSubscription,
+  addToRequest as addSubscriptionToRequestBody,
+  markAsUsed as markSubscriptionKeyAsUsed
+} from '../subscription/controller'
 export User, { schema } from './model'
 
 const router = new Router()
@@ -16,7 +20,8 @@ router.route('/')
     body({ username, password, inviteCode }),
     validateSubscription,
     addSubscriptionToRequestBody,
-    create
+    create,
+    markSubscriptionKeyAsUsed
   )
 
 export default router

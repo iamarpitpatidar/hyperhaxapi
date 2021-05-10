@@ -1,25 +1,25 @@
 import { validate as uuidValidate, version as uuidVersion } from 'uuid'
-import { success as sendSuccess, error as sendError } from '../../services/response'
+import { error as sendError } from '../../services/response'
 import { Subscription } from './index'
 
 export const validate = ({ bodymen: { body: { inviteCode } } }, res, next) => {
-  if (!inviteCode) { sendError(res, { statusCode: 401, message: 'InviteCode Required' }); return }
+  if (!inviteCode) { sendError(res, 401, 'InviteCode Required'); return }
   if (!uuidValidate(inviteCode) || uuidVersion(inviteCode) !== 5) {
-    sendError(res, { statusCode: 422, message: 'Invalid InviteCode' })
+    sendError(res, 422, 'Invalid InviteCode')
     return
   }
 
   Subscription.findOne({ code: inviteCode, expiry: { $gt: Date.now() } }, (error, code) => {
-    if (error) sendError(res, { statusCode: 500, message: 'Internal Server Error' })
-    if (!code) sendError(res, { statusCode: 422, message: 'Code is either invalid or expired' })
-    if (code.used) sendError(res, { statusCode: 422, message: 'Code has been already used by someone!' })
+    if (error) sendError(res, 500, 'Internal Server Error')
+    if (!code) sendError(res, 422, 'Code is either invalid or expired')
+    if (code.used) sendError(res, 422, 'Code has been already used by someone!')
     next()
   })
 }
 
 export const addToRequest = (req, res, next) => {
   Subscription.findOne({ code: req.body.inviteCode }, (error, subscription) => {
-    if (error) sendError(res, { statusCode: 500, message: 'Internal Server Error' })
+    if (error) sendError(res, 500, 'Internal Server Error')
 
     req.body = {
       username: req.body.username,
@@ -32,6 +32,10 @@ export const addToRequest = (req, res, next) => {
     }
     next()
   })
+}
+
+export const markAsUsed = ({ bodymen: { body: { inviteCode } } }) => {
+  console.log(inviteCode)
 }
 
 // Subscription.create({
