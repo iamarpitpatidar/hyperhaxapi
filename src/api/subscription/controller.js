@@ -10,9 +10,10 @@ export const validate = ({ bodymen: { body: { inviteCode } } }, res, next) => {
   }
 
   Subscription.findOne({ code: inviteCode, expiry: { $gt: Date.now() } }, (error, code) => {
-    if (error) sendError(res, 500, 'Internal Server Error')
-    if (!code) sendError(res, 422, 'Code is either invalid or expired')
-    if (code.used) sendError(res, 422, 'Code has been already used by someone!')
+    if (error) { sendError(res, 500, 'Internal Server Error'); return }
+
+    if (!code) { sendError(res, 422, 'Code is either invalid or expired'); return }
+    if (code.used) { sendError(res, 422, 'Code has been already used by someone!'); return }
     next()
   })
 }
@@ -35,7 +36,13 @@ export const addToRequest = (req, res, next) => {
 }
 
 export const markAsUsed = ({ bodymen: { body: { inviteCode } } }) => {
-  console.log(inviteCode)
+  Subscription.findOne({ code: inviteCode }).then(subscription => {
+    if (subscription) {
+      subscription.used = true
+      subscription.save()
+    }
+    return null
+  })
 }
 
 // Subscription.create({
