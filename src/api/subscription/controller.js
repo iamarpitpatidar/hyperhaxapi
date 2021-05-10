@@ -3,6 +3,7 @@ import { success as sendSuccess, error as sendError } from '../../services/respo
 import { Subscription } from './index'
 
 export const validate = ({ bodymen: { body: { inviteCode } } }, res, next) => {
+  if (!inviteCode) { sendError(res, { statusCode: 401, message: 'InviteCode Required' }); return }
   if (!uuidValidate(inviteCode) || uuidVersion(inviteCode) !== 5) {
     sendError(res, { statusCode: 422, message: 'Invalid InviteCode' })
     return

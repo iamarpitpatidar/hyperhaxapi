@@ -10,5 +10,6 @@ module.exports = {
   ],
   coverageProvider: 'v8',
   testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/test/setup.js']
+  setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
+  verbose: true
 }
