@@ -17,7 +17,7 @@ module.exports = function (app) {
     app.use(helmet())
   }
 
-  // app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
   app.set('trust proxy', true)
   app.use('/', routes)

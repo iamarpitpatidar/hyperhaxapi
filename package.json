@@ -1,6 +1,6 @@
 {
   "name": "hyperhaxapi",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "private": true,
   "main": "src",
   "scripts": {
@@ -27,7 +27,6 @@
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "mongoose": "^5.12.7",
-    "mongoose-keywords": "^0.4.1",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "querymen": "^2.1.4",

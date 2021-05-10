@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose'
-import mongooseKeywords from 'mongoose-keywords'
 
 const plans = ['plus', 'pro']
 
@@ -37,7 +36,6 @@ subscriptionSchema.statics = {
   plans
 }
 
-subscriptionSchema.plugin(mongooseKeywords, { paths: ['code', 'plan'] })
 const model = mongoose.model('Subscription', subscriptionSchema)
 
 export const schema = model.schema

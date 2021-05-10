@@ -1,10 +1,11 @@
 // import crypto from 'crypto'
 import bcrypt from 'bcrypt'
 import mongoose, { Schema } from 'mongoose'
-import mongooseKeywords from 'mongoose-keywords'
 import { env } from '../../config'
 
+const accountStatus = ['active', 'banned']
 const roles = ['user', 'seller', 'admin', 'master']
+const plans = ['plus', 'pro']
 
 const userSchema = new Schema({
   username: {
@@ -25,35 +26,26 @@ const userSchema = new Schema({
     enum: roles,
     default: 'user'
   },
-  inviteCode: {
+  invitedBy: {
     type: String,
-    required: true,
+    default: 'admin'
+  },
+  status: {
+    type: String,
+    enum: accountStatus,
+    default: 'active'
+  },
+  hardwareID: {
+    type: String,
     trim: true
   },
   subscription: {
-    type: Object,
-    required: true
-  },
-  picture: {
-    type: String,
-    trim: true
+    plan: { type: String, enum: plans, required: true },
+    expiry: { type: Date, required: true }
   }
 }, {
   timestamps: true
 })
-
-// userSchema.path('username').set(function (username) {
-//   if (!this.picture || this.picture.indexOf('https://gravatar.com') === 0) {
-//     const hash = crypto.createHash('md5').update(email).digest('hex')
-//     this.picture = `https://ui-avatars.com/api/?name=${username}&background=0D8ABC&color=fff`
-//   }
-//
-//   if (!this.name) {
-//     this.name = email.replace(/^(.+)@.+$/, '$1')
-//   }
-//
-//   return email
-// })
 
 userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next()
@@ -70,10 +62,10 @@ userSchema.pre('save', function (next) {
 userSchema.methods = {
   view (full) {
     const view = {}
-    let fields = ['id', 'username', 'picture']
+    let fields = ['_id', 'username', 'status']
 
     if (full) {
-      fields = [...fields, 'createdAt', 'role', 'subscription']
+      fields = [...fields, 'invitedBy', 'role', 'createdAt', 'subscription']
     }
 
     fields.forEach((field) => { view[field] = this[field] })
@@ -88,8 +80,6 @@ userSchema.methods = {
 userSchema.statics = {
   roles
 }
-
-userSchema.plugin(mongooseKeywords, { paths: ['username'] })
 
 const model = mongoose.model('User', userSchema)
 
