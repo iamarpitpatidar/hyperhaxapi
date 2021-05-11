@@ -38,6 +38,10 @@ const userSchema = new Schema({
     type: String,
     trim: true
   },
+  secret: {
+    type: String,
+    required: true
+  },
   subscription: {
     plan: { type: String, enum: plans, required: true },
     expiry: { type: Date, required: true }

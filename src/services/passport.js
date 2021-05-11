@@ -23,6 +23,11 @@ export const password = async (req, res, next) => {
   })(req, res, next)
 }
 
+export const token = async (req, res, next) => {
+  console.log(JSON.stringify(req.headers))
+  console.log(req.body)
+}
+
 passport.use(new Strategy((username, password, done) => {
   User.findOne({ username }, async (error, user) => {
     if (error) { return done(error) }
@@ -35,3 +40,5 @@ passport.use(new Strategy((username, password, done) => {
     }).catch(done)
   })
 }))
+
+// passport.use()

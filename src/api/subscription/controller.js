@@ -26,6 +26,7 @@ export const addToRequest = (req, res, next) => {
       username: req.body.username,
       password: req.body.password,
       invitedBy: subscription.createdBy,
+      secret: Math.random().toString(36).substring(2),
       subscription: {
         plan: subscription.plan,
         expiry: subscription.expiry
