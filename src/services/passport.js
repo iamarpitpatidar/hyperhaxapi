@@ -4,7 +4,7 @@ import { Strategy } from 'passport-local'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { error as sendError } from './response'
 import { jwtSecret } from '../config'
-import User, { schema } from '../api/user/model'
+import User from '../api/user/model'
 
 export const password = async (req, res, next) => {
   if (Object.keys(req.body).length === 0) { sendError(res, 400, 'Username is required'); return }
@@ -30,7 +30,8 @@ export const token = ({ required, roles = User.roles } = {}) => async (req, res,
   passport.authenticate('token', { session: false }, (error, user, info) => {
     if (error === 'TOKEN_EXPIRED') { sendError(res, 401, 'Access Token is expired'); return }
     if (error === 'INVALID_TOKEN') { sendError(res, 402, 'Access Token is invalid'); return }
-    if (error || (required && !user) || (required && !~roles.indexOf(user.role))) return res.status(403).json({ message: 'Access Denied' })
+    if (user && required && !~roles.indexOf(user.role)) { sendError(res, 401, 'Access Denied'); return }
+    if (error || (required && !user)) return res.status(403).json({ message: 'Access Denied' })
 
     req.logIn(user, { session: false }, (err) => {
       if (err) return res.status(401).end()
