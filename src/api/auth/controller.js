@@ -11,3 +11,10 @@ export const login = ({ user }, res, next) => {
     .then(success(res, 201))
     .catch(next)
 }
+
+export const logout = (req, res, next) => {
+  req.user.secret = Math.random().toString(32).substring(2)
+
+  req.user.save()
+  return res.status(200).json({ message: 'ok' })
+}
