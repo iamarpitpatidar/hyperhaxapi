@@ -1,4 +1,4 @@
-import { validate as uuidValidate, version as uuidVersion } from 'uuid'
+import { validate as uuidValidate, version as uuidVersion, v5 as uuidv5 } from 'uuid'
 import { error as sendError } from '../../services/response'
 import { Subscription } from './index'
 
@@ -47,5 +47,5 @@ export const markAsUsed = ({ bodymen: { body: { inviteCode } } }) => {
 }
 
 // Subscription.create({
-//   code: 'c106a26a-21bb-5538-8bf2-57095d1976c1'
+//   code: uuidv5('username3', '1b671a64-40d5-491e-99b0-da01ff1f3341')
 // })
