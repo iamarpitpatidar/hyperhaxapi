@@ -7,7 +7,8 @@ export const index = (req, res, next) => {
     .then(success(res))
     .catch(next)
 }
-
 export const create = ({ bodymen: { body } }, res, next) => {
-
+  Product.create(body)
+    .then(product => product)
+    .then(success(res, 201))
 }

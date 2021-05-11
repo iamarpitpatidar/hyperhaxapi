@@ -1,17 +1,17 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
-import { index } from './controller'
+import { index, create } from './controller'
 import { token } from '../../services/passport'
 import { schema } from './model'
-export User, { schema } from './model'
+export Product, { schema } from './model'
 
 const router = new Router()
 const { name, description, image, price } = schema.tree
 
 router.route('/')
   .get(index)
-  .post(
+  .post(token({ required: true, roles: ['admin'] }),
     body({ name, description, image, price }),
-    token({ required: true, roles: ['admin'] }))
+    create)
 
 export default router
