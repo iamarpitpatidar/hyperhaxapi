@@ -1,7 +1,10 @@
 import passport from 'passport'
+import mongoose from 'mongoose'
 import { Strategy } from 'passport-local'
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { error as sendError } from './response'
-import User from '../api/user/model'
+import { jwtSecret } from '../config'
+import User, { schema } from '../api/user/model'
 
 export const password = async (req, res, next) => {
   if (Object.keys(req.body).length === 0) { sendError(res, 400, 'Username is required'); return }
@@ -23,9 +26,17 @@ export const password = async (req, res, next) => {
   })(req, res, next)
 }
 
-export const token = async (req, res, next) => {
-  console.log(JSON.stringify(req.headers))
-  console.log(req.body)
+export const token = ({ required, roles = User.roles } = {}) => async (req, res, next) => {
+  passport.authenticate('token', { session: false }, (error, user, info) => {
+    if (error === 'TOKEN_EXPIRED') { sendError(res, 401, 'Access Token is expired'); return }
+    if (error === 'INVALID_TOKEN') { sendError(res, 402, 'Access Token is invalid'); return }
+    if (error || (required && !user) || (required && !~roles.indexOf(user.role))) return res.status(403).json({ message: 'Access Denied' })
+
+    req.logIn(user, { session: false }, (err) => {
+      if (err) return res.status(401).end()
+      next()
+    })
+  })(req, res, next)
 }
 
 passport.use(new Strategy((username, password, done) => {
@@ -41,4 +52,19 @@ passport.use(new Strategy((username, password, done) => {
   })
 }))
 
-// passport.use()
+passport.use('token', new JwtStrategy({
+  secretOrKey: jwtSecret,
+  jwtFromRequest: ExtractJwt.fromExtractors([
+    ExtractJwt.fromUrlQueryParameter('access_token'),
+    ExtractJwt.fromBodyField('access_token'),
+    ExtractJwt.fromAuthHeaderWithScheme('Bearer')
+  ])
+}, ({ id, secret, expiry }, next) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) return next('INVALID_TOKEN')
+  if (Date.now() > expiry) return next('TOKEN_EXPIRED')
+
+  User.findById(id).then(user => {
+    if (secret !== user.secret) return next('INVALID_TOKEN')
+    next(null, user)
+  }).catch(next)
+}))
