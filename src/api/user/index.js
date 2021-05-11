@@ -11,7 +11,7 @@ const router = new Router()
 const { username, password, inviteCode } = schema.tree
 
 router.route('/')
-  .get(token({ required: true, roles: ['admin'] }),
+  .get(token({ required: true, roles: ['seller', 'admin'] }),
     query(),
     index)
   .post(body({ username, password, inviteCode }),
@@ -21,7 +21,7 @@ router.route('/')
     markAsUsed)
 
 router.route('/:id')
-  .get(token({ required: true, roles: ['admin'] }),
+  .get(token({ required: true, roles: ['seller', 'admin'] }),
     show)
 
 export default router

@@ -3,8 +3,13 @@ import { notFound, success } from '../../services/response'
 import mongoose from 'mongoose'
 
 export const index = (req, res, next) => {
-  Product.find()
-    .then(products => products)
+  Product.count()
+    .then(count => Product.find()
+      .then(product => ({
+        rows: product,
+        count
+      }))
+    )
     .then(success(res))
     .catch(next)
 }
