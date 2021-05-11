@@ -1,6 +1,7 @@
 import cors from 'cors'
 import morgan from 'morgan'
 import helmet from 'helmet'
+import passport from 'passport'
 import bodyParser from 'body-parser'
 import compression from 'compression'
 import { errorHandler as queryErrorHandler } from 'querymen'
@@ -19,6 +20,7 @@ module.exports = function (app) {
 
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
+  app.use(passport.initialize())
   app.set('trust proxy', true)
   app.use('/', routes)
   app.use(queryErrorHandler())

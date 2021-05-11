@@ -1,29 +1,37 @@
 import passport from 'passport'
-import { Schema } from 'bodymen'
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
-import { jwtSecret } from '../config'
-import User, { schema } from '../api/user/model'
+import { Strategy } from 'passport-local'
+import { error as sendError } from './response'
+import User from '../api/user/model'
 
-export const subscription = ({ required } = {}) => (req, res, next) =>
-  passport.authenticate('subscription', { session: false }, (err, user, info) => {
-    if (err || (required && !user) || (required)) {
-      return res.status(401).end()
-    }
-    req.logIn(user, { session: false }, (err) => {
-      if (err) return res.status(401).end()
+export const password = async (req, res, next) => {
+  if (Object.keys(req.body).length === 0) { sendError(res, 400, 'Username is required'); return }
+  if (!req.body.username || req.body.username.length < 3) { sendError(res, 400, 'Invalid Username'); return }
+  if (!req.body.password || req.body.password === '') { sendError(res, 400, 'Password is required'); return }
+  if (req.body.password.length < 6) { sendError(res, 400, 'Invalid Password'); return }
+
+  passport.authenticate('local', (error, user) => {
+    if (error && error.param) {
+      return res.status(400).json(error)
+    } else if (error === 'AUTH_ERROR') {
+      return res.status(401).json({ message: 'Username or Password incorrect' })
+    } else if (!user) return res.status(400).end()
+
+    req.logIn(user, { session: false }, (error) => {
+      if (error) return res.status(400).end()
       next()
     })
   })(req, res, next)
+}
 
-passport.use('subscription', new JwtStrategy({
-  secretOrKey: jwtSecret,
-  jwtFromRequest: ExtractJwt.fromExtractors([
-    ExtractJwt.fromUrlQueryParameter('subscription_code'),
-    ExtractJwt.fromBodyField('subscription_code')
-  ])
-}, ({ id }, done) => {
-  // User.findById(id).then((user) => {
-  //   done(null, user)
-  //   return null
-  // }).catch(done)
+passport.use(new Strategy((username, password, done) => {
+  User.findOne({ username }, async (error, user) => {
+    if (error) { return done(error) }
+    if (!user) { return done('AUTH_ERROR') }
+
+    return user.authenticate(password).then((user) => {
+      if (!user) return done('AUTH_ERROR')
+
+      done(null, user)
+    }).catch(done)
+  })
 }))

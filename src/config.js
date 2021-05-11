@@ -23,7 +23,6 @@ const config = {
     env: process.env.NODE_ENV || 'development',
     port: process.env.PORT || 9000,
     defaultEmail: 'no-reply@hyperhaxapi.com',
-    sendgridKey: requireProcessEnv('SENDGRID_KEY'),
     masterKey: requireProcessEnv('MASTER_KEY'),
     jwtSecret: requireProcessEnv('JWT_SECRET'),
     mongo: {
