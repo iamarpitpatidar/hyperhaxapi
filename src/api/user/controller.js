@@ -2,6 +2,20 @@ import mongoose from 'mongoose'
 import { User } from './index'
 import { success, notFound, error } from '../../services/response'
 
+export const index = ({ querymen: { query, select, cursor } }, res, next) => {
+  User.count(query)
+    .then(count => User.find(query, select, cursor)
+      .then(users => ({
+        rows: users.map((user) => user.view()),
+        count
+      }))
+    )
+    .then(success(res))
+    .catch(next)
+  console.log(query)
+  console.log(select)
+  console.log(cursor)
+}
 export const show = ({ params }, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(params.id)) return notFound(res)(null)
   User.findById(params.id)

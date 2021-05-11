@@ -1,18 +1,19 @@
 import { Router } from 'express'
+import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { schema } from './model'
-import { show, create } from './controller'
-import { validate, addToRequest, markAsUsed } from '../subscription/controller'
+import { index, show, create } from './controller'
 import { token } from '../../services/passport'
+import { validate, addToRequest, markAsUsed } from '../subscription/controller'
+import { schema } from './model'
 export User, { schema } from './model'
 
 const router = new Router()
 const { username, password, inviteCode } = schema.tree
 
 router.route('/')
-  .get((req, res) => {
-    res.send('Users route')
-  })
+  .get(token({ required: true, roles: ['admin'] }),
+    query(),
+    index)
   .post(body({ username, password, inviteCode }),
     validate,
     addToRequest,
