@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
-import { index, create } from './controller'
+import { index, create, show } from './controller'
 import { token } from '../../services/passport'
 import { schema } from './model'
 export Product, { schema } from './model'
@@ -13,5 +13,7 @@ router.route('/')
   .post(token({ required: true, roles: ['admin'] }),
     body({ name, description, image, price }),
     create)
+
+router.get('/:id', show)
 
 export default router

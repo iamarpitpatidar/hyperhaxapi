@@ -12,9 +12,6 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) => {
     )
     .then(success(res))
     .catch(next)
-  console.log(query)
-  console.log(select)
-  console.log(cursor)
 }
 export const show = ({ params }, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(params.id)) return notFound(res)(null)
