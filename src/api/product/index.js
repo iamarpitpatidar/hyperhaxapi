@@ -12,6 +12,6 @@ router.route('/')
   .get(index)
   .post(
     body({ name, description, image, price }),
-    token)
+    token({ required: true, roles: ['admin'] }))
 
 export default router

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
 import { schema } from './model'
-import { create } from './controller'
+import { show, create } from './controller'
 import { validate, addToRequest, markAsUsed } from '../subscription/controller'
 export User, { schema } from './model'
 
@@ -18,5 +18,8 @@ router.route('/')
     addToRequest,
     create,
     markAsUsed)
+
+router.route('/:_id')
+  .get(show)
 
 export default router

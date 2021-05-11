@@ -1,8 +1,17 @@
+import mongoose from 'mongoose'
 import { User } from './index'
-import { success, error } from '../../services/response'
+import { success, notFound, error } from '../../services/response'
 
-export const create = async (req, res, next) => {
-  await User.create(req.body)
+export const show = ({ params }, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(params._id)) return notFound(res)(null)
+  User.findById(params._id)
+    .then(notFound(res))
+    .then(user => user ? user.view(true) : null)
+    .then(success(res))
+    .catch(next)
+}
+export const create = (req, res, next) => {
+  User.create(req.body)
     .then(user => {
       next()
       return user.view(true)
