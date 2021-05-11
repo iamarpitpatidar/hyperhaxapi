@@ -65,10 +65,10 @@ userSchema.pre('save', function (next) {
 userSchema.methods = {
   view (full) {
     const view = {}
-    let fields = ['_id', 'username', 'status']
+    let fields = ['_id', 'username', 'status', 'subscription']
 
     if (full) {
-      fields = [...fields, 'invitedBy', 'role', 'createdAt', 'subscription']
+      fields = [...fields, 'invitedBy', 'role', 'createdAt']
     }
 
     fields.forEach((field) => { view[field] = this[field] })
