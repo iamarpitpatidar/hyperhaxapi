@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose'
 import { env } from '../../config'
 
 const accountStatus = ['active', 'banned']
-const roles = ['user', 'seller', 'admin', 'master']
+const roles = ['user', 'seller', 'support', 'admin']
 const plans = ['plus', 'pro']
 
 const userSchema = new Schema({
