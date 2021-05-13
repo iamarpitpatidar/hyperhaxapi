@@ -5,7 +5,7 @@ export const login = ({ user }, res, next) => {
   sign({
     id: user.id,
     secret: user.secret,
-    expiry: Date.now() + (1000 * 60 * 60 * 24)
+    expiry: Date.now() + (1000 * 60 * 60)
   })
     .then((token) => ({ token, user: user.view() }))
     .then(success(res, 201))
