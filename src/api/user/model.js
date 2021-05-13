@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import mongoose, { Schema } from 'mongoose'
+import mongooseKeywords from 'mongoose-keywords'
 import { env } from '../../config'
 
 const accountStatus = ['active', 'banned']
@@ -83,6 +84,8 @@ userSchema.methods = {
 userSchema.statics = {
   roles
 }
+
+userSchema.plugin(mongooseKeywords, { paths: ['username'] })
 
 const model = mongoose.model('User', userSchema)
 
