@@ -6,7 +6,7 @@ import { index } from './controller'
 const router = Router()
 
 router.route('/')
-  .get(token({ required: true, roles: ['admin'] }),
+  .get(token({ required: true, roles: ['support', 'admin'] }),
     query(),
     index)
 
