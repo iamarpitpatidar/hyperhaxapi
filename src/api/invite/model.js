@@ -31,7 +31,7 @@ const inviteSchema = new Schema({
   }
 })
 
-inviteSchema.plugin(mongooseKeywords, { path: ['seller'] })
+inviteSchema.plugin(mongooseKeywords, { path: ['createdBy'] })
 const model = mongoose.model('Invite', inviteSchema)
 
 export const schema = model.schema
