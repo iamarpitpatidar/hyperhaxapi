@@ -9,7 +9,7 @@ export const create = ({ bodymen: { body } }, res, next) => {
 
   Invite.findOne({ code: body.activationKey }).then(code => {
     if (!code) { error(res, 'Code is invalid', 422); return }
-    if (code.used) { error(res, 'Code has been already used!', 422) }
+    if (code.used) { error(res, 'Code has already been used!', 422); return }
 
     User.create({ username: body.username, password: body.password })
       .then(user => user.view())
