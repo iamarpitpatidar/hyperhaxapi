@@ -22,7 +22,8 @@ const config = {
   all: {
     env: process.env.NODE_ENV || 'development',
     port: process.env.PORT || 9000,
-    defaultEmail: 'no-reply@hyperhaxapi.com',
+    defaultEmail: 'no-reply@hyperhax.com',
+    adminEmail: 'admin@hyperhax.com',
     jwtSecret: requireProcessEnv('JWT_SECRET'),
     mongo: {
       options: {
