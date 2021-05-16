@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { index, create } from './controller'
+export Invite, { schema } from './model'
 
 const router = new Router()
 

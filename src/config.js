@@ -24,6 +24,7 @@ const config = {
     port: process.env.PORT || 9000,
     defaultEmail: 'no-reply@hyperhax.com',
     adminEmail: 'admin@hyperhax.com',
+    baseNamespace: requireProcessEnv('BASE_NAMESPACE'),
     masterKey: requireProcessEnv('MASTER_KEY'),
     jwtSecret: requireProcessEnv('JWT_SECRET'),
     mongo: {

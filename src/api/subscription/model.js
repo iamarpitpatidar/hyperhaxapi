@@ -7,8 +7,8 @@ const subscriptionSchema = new Schema({
   }
 })
 
-subscriptionSchema.plugin(mongooseKeywords, { paths: ['username'] })
-const model = mongoose.model('User', subscriptionSchema)
+subscriptionSchema.plugin(mongooseKeywords, { paths: ['plan'] })
+const model = mongoose.model('Subscription', subscriptionSchema)
 
 export const schema = model.schema
 export default model
