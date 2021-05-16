@@ -15,7 +15,7 @@ router.post('/create',
   body({
     username,
     password,
-    subscriptionKey: { type: String, required: true }
+    activationKey: { type: String, required: true }
   }),
   create)
 

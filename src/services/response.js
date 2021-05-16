@@ -5,7 +5,7 @@ export const success = (res, status) => (entity) => {
   return null
 }
 
-export const error = (res, status, message) => {
+export const error = (res, message, status) => {
   if (message) {
     res.status(status || 400).json({
       message: message,
