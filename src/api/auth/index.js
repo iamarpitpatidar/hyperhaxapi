@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
 import { login, logout } from './controller'
-import { password as passwordAuth } from '../../services/passport'
+import { password as passwordAuth, token } from '../../services/passport'
 
 const router = Router()
 
@@ -10,6 +10,8 @@ router.post('/',
   passwordAuth,
   login)
 
-router.get('/logout', logout)
+router.get('/logout',
+  token({ required: true, roles: ['user'] }),
+  logout)
 
 export default router
