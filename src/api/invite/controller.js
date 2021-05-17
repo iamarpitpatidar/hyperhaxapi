@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
+import { v5 as uuid } from 'uuid'
 import { Invite } from './index'
-import { success, notFound } from '../../services/response'
+import { baseNamespace } from '../../config'
+import { success, error, notFound } from '../../services/response'
 
 export const index = ({ querymen: { query, select, cursor }, user }, res, next) => {
   Invite.count(query)
@@ -16,7 +18,6 @@ export const index = ({ querymen: { query, select, cursor }, user }, res, next) 
     .then(success(res))
     .catch(next)
 }
-
 export const show = (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) return notFound(res)(null)
   Invite.findById(req.params.id)
@@ -28,7 +29,17 @@ export const show = (req, res, next) => {
     .then(success(res))
     .catch(next)
 }
-
-export const create = (req, res) => {
-  res.send('This route will create a inviteCode, and return the object')
+export const create = ({ bodymen: { body } }, res) => {
+  Invite.create({
+    code: uuid(Math.random().toString(32).substring(2), baseNamespace),
+    role: body.role,
+    length: body.length,
+    orderID: body.orderID
+  })
+    .then(invite => invite.view(true))
+    .then(success(res, 201))
+    .catch(err => {
+      if (err.name === 'MongoError' && err.code === 11000) error(res, 'invite already exist. Please try again', 409)
+      else error(res, 500)
+    })
 }
