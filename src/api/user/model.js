@@ -30,7 +30,8 @@ const userSchema = new Schema({
   },
   hardwareID: {
     type: String,
-    trim: true
+    trim: true,
+    default: null
   },
   secret: {
     type: String,
