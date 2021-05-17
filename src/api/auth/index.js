@@ -10,7 +10,7 @@ router.post('/',
   passwordAuth,
   login)
 
-router.get('/logout',
+router.delete('/token',
   token({ required: true, roles: ['user'] }),
   logout)
 
