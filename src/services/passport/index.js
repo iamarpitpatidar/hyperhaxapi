@@ -1,7 +1,5 @@
 import passport from 'passport'
-import { Schema } from 'bodymen'
-import { BasicStrategy } from 'passport-http'
-import User, { schema } from '../api/user/model'
+import passwordStrategy from './password'
 
 export const password = (req, res, next) => {
   passport.authenticate('password', { session: false }, (err, user) => {
@@ -20,20 +18,4 @@ export const password = (req, res, next) => {
   })(req, res, next)
 }
 
-passport.use('password', new BasicStrategy((username, password, done) => {
-  const userSchema = new Schema({ username: schema.tree.username, password: schema.tree.password })
-  userSchema.validate({ username, password }, (err) => {
-    if (err) done(err)
-  })
-
-  User.findOne({ username }).then((user) => {
-    if (!user) {
-      done(true)
-      return null
-    }
-    return user.authenticate(password, user.password).then((user) => {
-      done(null, user)
-      return null
-    }).catch(done)
-  })
-}))
+passport.use('password', passwordStrategy)
