@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { jwtSecret } from '../../config'
-import User from '../../api/user/'
+import { User } from '../../api/user/'
 
 export default new JwtStrategy({
   secretOrKey: jwtSecret,
