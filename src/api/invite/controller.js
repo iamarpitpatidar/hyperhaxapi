@@ -1,13 +1,19 @@
-import { v5 as uuid } from 'uuid'
 import { Invite } from './index'
-import { baseNamespace } from '../../config'
+import { success } from '../../services/response'
 
-export const index = (req, res, next) => {
-  Invite.create({
-    code: uuid(Math.random().toString(32).substring(2), baseNamespace),
-    role: 'rust'
-  })
-  res.send('This route will index all the inviteCodes')
+export const index = ({ querymen: { query, select, cursor }, user }, res, next) => {
+  Invite.count(query)
+    .then(count => Invite.find(query, select, cursor)
+      .then(invites => ({
+        rows: invites.filter(each => {
+          if (user.role === 'seller') return (each.createdBy === user.username) ? each : false
+          else return each
+        }),
+        count
+      }))
+    )
+    .then(success(res))
+    .catch(next)
 }
 
 export const create = (req, res, next) => {
