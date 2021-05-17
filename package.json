@@ -1,6 +1,6 @@
 {
   "name": "hyperhaxapi",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "main": "src",
   "scripts": {
@@ -36,7 +36,6 @@
     "passport": "^0.4.1",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0",
     "querymen": "^2.1.4",
     "uuid": "^8.3.2"
   },
