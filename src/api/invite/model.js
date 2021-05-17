@@ -16,6 +16,11 @@ const inviteSchema = new Schema({
     type: Number,
     default: 1
   },
+  orderID: {
+    type: String,
+    required: true,
+    unique: true
+  },
   createdBy: {
     type: String,
     default: 'admin'
