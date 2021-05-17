@@ -36,6 +36,20 @@ const inviteSchema = new Schema({
   }
 })
 
+inviteSchema.methods = {
+  view (full) {
+    const view = {}
+    let fields = ['_id', 'role', 'length', 'orderID', 'createdBy']
+
+    if (full) {
+      fields = [...fields, 'code', 'soldTo', 'used', 'createdAt']
+    }
+
+    fields.forEach((field) => { view[field] = this[field] })
+    return view
+  }
+}
+
 inviteSchema.plugin(mongooseKeywords, { path: ['createdBy'] })
 const model = mongoose.model('Invite', inviteSchema)
 

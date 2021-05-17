@@ -6,8 +6,8 @@ export const index = ({ querymen: { query, select, cursor }, user }, res, next) 
     .then(count => Invite.find(query, select, cursor)
       .then(invites => ({
         rows: invites.filter(each => {
-          if (user.role === 'seller') return (each.createdBy === user.username) ? each : false
-          else return each
+          if (user.role === 'seller') return (each.createdBy === user.username) ? each.view(true) : false
+          else return each.view()
         }),
         count
       }))
