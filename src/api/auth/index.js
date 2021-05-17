@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
-import { login, logout } from './controller'
+import { login, purge } from './controller'
 import { password as passwordAuth, token } from '../../services/passport'
 
 const router = Router()
@@ -12,6 +12,6 @@ router.post('/',
 
 router.delete('/token',
   token({ required: true, roles: ['user'] }),
-  logout)
+  purge)
 
 export default router

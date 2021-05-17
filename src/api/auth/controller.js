@@ -12,7 +12,7 @@ export const login = ({ user }, res, next) => {
     .catch(next)
 }
 
-export const logout = (req, res) => {
+export const purge = (req, res) => {
   req.user.secret = Math.random().toString(32).substring(2)
 
   req.user.save()
