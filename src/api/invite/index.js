@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
-import { index, create } from './controller'
+import { index, show, create } from './controller'
 import { token } from '../../services/passport'
 export Invite, { schema } from './model'
 
@@ -12,8 +12,12 @@ router.get('/',
   index
 )
 
+router.get('/:id',
+  token({ required: true, roles: ['seller', 'support', 'admin'] }),
+  show)
+
 router.post('/create',
-  // token({ required: true, roles: ['admin'] }),
+  token({ required: true, roles: ['admin'] }),
   create)
 
 export default router
