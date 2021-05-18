@@ -1,13 +1,13 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
 import { login, purge } from './controller'
-import { password as passwordAuth, token } from '../../services/passport'
+import { password, token } from '../../services/passport'
 
 const router = Router()
 
 router.post('/',
   body({ hardwareID: { type: String, required: true } }),
-  passwordAuth,
+  password,
   login)
 
 router.delete('/token',
