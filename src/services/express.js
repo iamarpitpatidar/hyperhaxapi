@@ -7,7 +7,7 @@ import compression from 'compression'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env } from '../config'
-import routes from '../api'
+import routes from '../routes'
 
 module.exports = function (app) {
   /* istanbul ignore next */
