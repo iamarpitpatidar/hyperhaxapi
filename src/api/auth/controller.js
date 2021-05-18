@@ -16,5 +16,5 @@ export const purge = (req, res) => {
   req.user.secret = Math.random().toString(32).substring(2)
 
   req.user.save()
-  return res.status(200).json({ message: 'ok' })
+  return res.status(200).json({ message: 'access token has been purged' })
 }
