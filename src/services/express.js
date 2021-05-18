@@ -7,9 +7,9 @@ import compression from 'compression'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env } from '../config'
-import routes from '../routes'
+import apiRoutes from '../routes'
 
-module.exports = function (app) {
+module.exports = function (app, routes = apiRoutes) {
   /* istanbul ignore next */
   if (env === 'production' || env === 'development') {
     app.use(cors())
@@ -25,4 +25,6 @@ module.exports = function (app) {
   app.use('/', routes)
   app.use(queryErrorHandler())
   app.use(bodyErrorHandler())
+
+  return app
 }
