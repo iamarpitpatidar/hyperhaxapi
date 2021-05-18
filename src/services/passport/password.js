@@ -1,6 +1,6 @@
 import { BasicStrategy } from 'passport-http'
 import { Schema } from 'bodymen'
-import { User, schema } from '../../api/user'
+import User, { schema } from '../../api/user/model'
 
 const strategy = new BasicStrategy((username, password, done) => {
   const userSchema = new Schema({ username: schema.tree.username, password: schema.tree.password })

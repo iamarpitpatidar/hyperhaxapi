@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
+import { Strategy, ExtractJwt } from 'passport-jwt'
 import { jwtSecret } from '../../config'
-import { User } from '../../api/user'
+import User from '../../api/user/model'
 
-const strategy = new JwtStrategy({
+const strategy = new Strategy({
   secretOrKey: jwtSecret,
   jwtFromRequest: ExtractJwt.fromExtractors([
     ExtractJwt.fromUrlQueryParameter('access_token'),

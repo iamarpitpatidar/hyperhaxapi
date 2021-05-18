@@ -1,10 +1,10 @@
 import passport from 'passport'
 import passwordStrategy from './password'
 import tokenStrategy from './token'
-import { User } from '../../api/user'
+import User from '../../api/user/model'
 import { error as sendError } from '../response'
 
-export const password = (req, res, next) => {
+export const password = (req, res, next) =>
   passport.authenticate('password', { session: false }, (err, user) => {
     if (err && err.param) return res.status(400).json(err)
     else if (err || !user) return res.status(401).end()
@@ -19,7 +19,6 @@ export const password = (req, res, next) => {
       } else return res.status(400).json({ message: 'Your hardwareID does not match the one in server' })
     } else Object.assign(user, { hardwareID: req.body.hardwareID }).save()
   })(req, res, next)
-}
 
 export const token = ({ required, roles = User.roles } = {}) => (req, res, next) =>
   passport.authenticate('token', { session: false }, (error, user) => {
