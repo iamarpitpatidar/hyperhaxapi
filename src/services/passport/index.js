@@ -1,8 +1,8 @@
 import passport from 'passport'
 import passwordStrategy from './password'
 import tokenStrategy from './token'
-import { error as sendError } from '../response'
 import { User } from '../../api/user'
+import { error as sendError } from '../response'
 
 export const password = (req, res, next) => {
   passport.authenticate('password', { session: false }, (err, user) => {

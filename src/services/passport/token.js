@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { jwtSecret } from '../../config'
-import { User } from '../../api/user/'
+import { User } from '../../api/user'
 
-export default new JwtStrategy({
+const strategy = new JwtStrategy({
   secretOrKey: jwtSecret,
   jwtFromRequest: ExtractJwt.fromExtractors([
     ExtractJwt.fromUrlQueryParameter('access_token'),
@@ -19,3 +19,5 @@ export default new JwtStrategy({
     next(null, user)
   }).catch(next)
 })
+
+export default strategy
