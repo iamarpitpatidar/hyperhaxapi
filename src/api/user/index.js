@@ -4,12 +4,8 @@ import { create } from './controller'
 import { schema } from './model'
 export User, { schema } from './model'
 
-const router = new Router()
+const router = Router()
 const { username, password } = schema.tree
-
-router.get('/', (req, res) => {
-  res.json({ foo: 'bar' })
-})
 
 router.post('/create',
   body({
