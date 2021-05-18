@@ -22,7 +22,7 @@ const config = {
   all: {
     env: process.env.NODE_ENV || 'development',
     port: process.env.PORT || 9000,
-    defaultEmail: 'no-reply@hyperhax.com',
+    defaultEmail: 'no-reply@hyperhaxapi.com',
     adminEmail: 'admin@hyperhax.com',
     baseNamespace: requireProcessEnv('BASE_NAMESPACE'),
     masterKey: requireProcessEnv('MASTER_KEY'),
