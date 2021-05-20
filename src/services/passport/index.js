@@ -16,7 +16,7 @@ export const password = (req, res, next) =>
           if (err) return res.status(500).end()
           next()
         })
-      } else return res.status(400).json({ message: 'Your hardwareID does not match the one in server' })
+      } else return res.status(401).json({ message: 'Your hardwareID does not match the one in server' })
     } else Object.assign(user, { hardwareID: req.body.hardwareID }).save()
   })(req, res, next)
 
