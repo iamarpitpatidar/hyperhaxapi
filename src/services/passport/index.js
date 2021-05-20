@@ -13,7 +13,7 @@ export const password = (req, res, next) =>
     if (user.hardwareID !== null) {
       if (user.hardwareID === req.body.hardwareID) {
         req.logIn(user, { session: false }, (err) => {
-          if (err) return res.status(401).end()
+          if (err) return res.status(500).end()
           next()
         })
       } else return res.status(400).json({ message: 'Your hardwareID does not match the one in server' })
