@@ -24,7 +24,7 @@ export const token = ({ required, roles = User.roles } = {}) => (req, res, next)
   passport.authenticate('token', { session: false }, (error, user) => {
     if (error === 'TOKEN_EXPIRED') { sendError(res, '401', 'Access Token is expired'); return }
     if (error === 'INVALID_TOKEN') { sendError(res, '401', 'Access Token is invalid'); return }
-    if (user && required && !~roles.indexOf(user.role)) { sendError(res, '401', 'Access Denied'); return }
+    if (user && required && !~roles.indexOf(user.role)) { sendError(res, '403', 'Access Denied'); return }
     if (error || (required && !user)) return res.status(403).json({ message: 'Access Denied' })
 
     req.logIn(user, { session: false }, (err) => {
