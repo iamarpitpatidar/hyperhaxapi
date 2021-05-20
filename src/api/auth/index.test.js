@@ -17,7 +17,7 @@ beforeEach(async () => {
   })
 })
 
-test('POST /auth 201', async () => {
+test('should return Access Token - (201, user)', async () => {
   const { status, body } = await request(app)
     .post('/')
     .auth('iamarpit', 'password')
@@ -30,7 +30,7 @@ test('POST /auth 201', async () => {
   expect(body.user._id).toBe(user.id)
   expect(await verify(body.token)).toBeTruthy()
 })
-test('POST /auth 400 - invalid username', async () => {
+test('should throw Bad Request - invalid username (400, user)', async () => {
   const { status, body } = await request(app)
     .post('/')
     .auth('i', 'password')
@@ -40,7 +40,7 @@ test('POST /auth 400 - invalid username', async () => {
   expect(typeof body).toBe('object')
   expect(body.param).toBe('username')
 })
-test('POST /auth 400 - invalid password', async () => {
+test('should throw Bad Request - invalid password (400, user)', async () => {
   const { status, body } = await request(app)
     .post('/')
     .auth('iamarpit', '123')
@@ -50,15 +50,7 @@ test('POST /auth 400 - invalid password', async () => {
   expect(typeof body).toBe('object')
   expect(body.param).toBe('password')
 })
-test('POST /auth 401 - user does not exist', async () => {
-  const { status } = await request(app)
-    .post('/')
-    .auth('iampolite', 'password')
-    .send({ hardwareID: '123456' })
-
-  expect(status).toBe(401)
-})
-test('POST /auth 401 - wrong password', async () => {
+test('should throw UnAuthorized - wrong password (401, user)', async () => {
   const { status } = await request(app)
     .post('/')
     .auth('iamarpit', 'passwor')
@@ -66,7 +58,15 @@ test('POST /auth 401 - wrong password', async () => {
 
   expect(status).toBe(401)
 })
-test('POST /auth 401 - missing hardwareID', async () => {
+test('should throw UnAuthorized - user does not exist (401, user)', async () => {
+  const { status } = await request(app)
+    .post('/')
+    .auth('iampolite', 'password')
+    .send({ hardwareID: '123456' })
+
+  expect(status).toBe(401)
+})
+test('should throw UnAuthorized - missing hardwareID (401, user)', async () => {
   const { status, body } = await request(app)
     .post('/')
     .auth('iamarpit', 'password')
@@ -75,7 +75,7 @@ test('POST /auth 401 - missing hardwareID', async () => {
   expect(typeof body).toBe('object')
   expect(body.param).toBe('hardwareID')
 })
-test('POST /auth 401 - missing auth', async () => {
+test('should throw UnAuthorized - (401, no Auth)', async () => {
   const { status } = await request(app)
     .post('/')
     .send({ hardwareID: '123456' })
@@ -83,7 +83,7 @@ test('POST /auth 401 - missing auth', async () => {
   expect(status).toBe(401)
 })
 
-test('DELETE /auth/token 200', async () => {
+test('should purge Access Token - (200)', async () => {
   const { status, body } = await request(app)
     .delete('/token')
     .send({ access_token: session })
@@ -92,7 +92,7 @@ test('DELETE /auth/token 200', async () => {
   expect(typeof body).toBe('object')
   expect(body.message).toBe('access token has been purged')
 })
-test('DELETE /auth/token 200 - missing Access Token', async () => {
+test('should throw Forbidden - missing Access Token (403)', async () => {
   const { status, body } = await request(app)
     .delete('/token')
 
