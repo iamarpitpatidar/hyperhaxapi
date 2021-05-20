@@ -60,6 +60,16 @@ describe('Get Access Token', () => {
     expect(typeof body).toBe('object')
     expect(body.param).toBe('hardwareID')
   })
+  it('should throw UnAuthorized - hardwareID mismatch (401, user)', async () => {
+    const { status, body } = await request(app)
+      .post('/')
+      .auth('iamarpit', 'password')
+      .send({ hardwareID: 'invalid' })
+
+    expect(status).toBe(401)
+    expect(typeof body).toBe('object')
+    expect(body.message).toBe('Your hardwareID does not match the one in server')
+  })
   it('should throw UnAuthorized - wrong password (401, user)', async () => {
     const { status } = await request(app)
       .post('/')
