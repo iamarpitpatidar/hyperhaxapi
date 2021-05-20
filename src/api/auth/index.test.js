@@ -6,10 +6,11 @@ import { User } from '../user'
 import { verify, signSync } from '../../services/jwt'
 
 const app = server(express(), routes)
-let user, session
+let user, bannedUser, session
 
 beforeEach(async () => {
   user = await User.create({ username: 'iamarpit', password: 'password', hardwareID: '123456' })
+  bannedUser = await User.create({ username: 'banned', password: 'password', status: 'banned' })
   session = signSync({
     id: user.id,
     secret: user.secret,
@@ -92,6 +93,16 @@ describe('Get Access Token', () => {
       .send({ hardwareID: '123456' })
 
     expect(status).toBe(401)
+  })
+  it('should throw Forbidden - (403, banned User)', async () => {
+    const { status, body } = await request(app)
+      .post('/')
+      .auth('banned', 'password')
+      .send({ hardwareID: '123456' })
+
+    expect(status).toEqual(403)
+    expect(typeof body).toEqual('object')
+    expect(body.message).toEqual('User is banned')
   })
 })
 
