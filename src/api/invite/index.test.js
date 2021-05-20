@@ -35,6 +35,87 @@ beforeEach(async () => {
   session.admin = signSync({ id: admin.id, secret: admin.secret, expiry: Date.now() + (1000 * 60 * 60) })
 })
 
+describe('Get Invites by ID', () => {
+  it('should return Invite code - (200, admin)', async () => {
+    const { status, body } = await request(app)
+      .get(`/${inviteByAdmin.id}`)
+      .send({ access_token: session.admin })
+
+    expect(status).toEqual(200)
+    expect(typeof body).toEqual('object')
+    expect(body.createdBy).toEqual('admin')
+    expect(body._id).toEqual(inviteByAdmin.id)
+    expect(body.code).toEqual(inviteByAdmin.code)
+  })
+  it('should return Invite code - (200, support)', async () => {
+    const { status, body } = await request(app)
+      .get(`/${inviteByAdmin.id}`)
+      .send({ access_token: session.support })
+
+    expect(status).toEqual(200)
+    expect(typeof body).toEqual('object')
+    expect(body.createdBy).toEqual('admin')
+    expect(body._id).toEqual(inviteByAdmin.id)
+    expect(body.code).toEqual(inviteByAdmin.code)
+  })
+  it('should return Invite code - (200, seller)', async () => {
+    const { status, body } = await request(app)
+      .get(`/${inviteBySeller.id}`)
+      .send({ access_token: session.seller })
+
+    expect(status).toEqual(200)
+    expect(typeof body).toEqual('object')
+    expect(body.createdBy).toEqual('seller')
+    expect(body._id).toEqual(inviteBySeller.id)
+    expect(body.code).toEqual(inviteBySeller.code)
+  })
+  it('should throw Forbidden - (403, user)', async () => {
+    const { status, body } = await request(app)
+      .get('/invalid')
+      .send({ access_token: session.user })
+
+    expect(status).toEqual(403)
+    expect(typeof body).toEqual('object')
+    expect(body.message).toEqual('Access Denied')
+  })
+  it('should throw Forbidden - (403, no Auth)', async () => {
+    const { status, body } = await request(app)
+      .get('/invalid')
+
+    expect(status).toEqual(403)
+    expect(typeof body).toEqual('object')
+    expect(body.message).toEqual('Access Denied')
+  })
+  it('should throw not Found - created by someone else (404, seller)', async () => {
+    const { status } = await request(app)
+      .get(`/${inviteByAdmin.id}`)
+      .send({ access_token: session.seller })
+
+    expect(status).toEqual(404)
+  })
+  it('should throw not Found - invalid Id (404, seller)', async () => {
+    const { status } = await request(app)
+      .get('/invalid')
+      .send({ access_token: session.seller })
+
+    expect(status).toEqual(404)
+  })
+  it('should throw not Found - invalid Id (404, support)', async () => {
+    const { status } = await request(app)
+      .get('/invalid')
+      .send({ access_token: session.support })
+
+    expect(status).toEqual(404)
+  })
+  it('should throw not Found - invalid Id (404, admin)', async () => {
+    const { status } = await request(app)
+      .get('/invalid')
+      .send({ access_token: session.admin })
+
+    expect(status).toEqual(404)
+  })
+})
+
 describe('Create Invite', () => {
   it('should create invite code - (201, admin)', async () => {
     const { status, body } = await request(app)
