@@ -8,6 +8,6 @@ const jwtVerify = Promise.promisify(jwt.verify)
 export const sign = (payload, options, method = jwtSign) =>
   method(payload, jwtSecret, options)
 
-export const signSync = (id, options) => sign(id, options, jwt.sign)
+export const signSync = (payload, options) => sign(payload, options, jwt.sign)
 
 export const verify = (token) => jwtVerify(token, jwtSecret)
