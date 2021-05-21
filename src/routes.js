@@ -5,6 +5,6 @@ import webhook from './webhook'
 const router = Router()
 
 router.use('/api', api)
-router.use('/webhook', webhook)
+router.use('/webhooks', webhook)
 
 export default router
