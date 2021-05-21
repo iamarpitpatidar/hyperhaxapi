@@ -195,4 +195,18 @@ describe('Create Invite', () => {
     expect(typeof body).toBe('object')
     expect(body.message).toBe('Access Denied')
   })
+  it('should throw conflict - (409, admin)', async () => {
+    const { status, body } = await request(app)
+      .post('/create')
+      .send({
+        role: 'rust',
+        length: 1,
+        orderID: 'ID12345',
+        access_token: session.admin
+      })
+
+    expect(status).toBe(409)
+    expect(typeof body).toBe('object')
+    expect(body.message).toBe('Invite already exist')
+  })
 })
