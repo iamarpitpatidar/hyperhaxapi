@@ -6,13 +6,11 @@ import { success, error, notFound } from '../../services/response'
 
 export const index = ({ querymen: { query, select, cursor }, user }, res, next) => {
   if (user.role === 'seller') query.createdBy = user.username
-  Invite.countDocuments(query)
-    .then(count => Invite.find(query, select, cursor)
-      .then(invites => ({
-        rows: invites.filter(each => (user.role === 'seller') ? each.view(true) : each.view()),
-        count
-      }))
-    )
+  Invite.find(query, select, cursor)
+    .then(invites => ({
+      rows: invites.map(each => user.role === 'seller' ? each.view(true) : each.view()),
+      count: invites.length
+    }))
     .then(success(res))
     .catch(next)
 }
