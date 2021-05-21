@@ -1,15 +1,7 @@
 import path from 'path'
 import merge from 'lodash/merge'
+import { requireProcessEnv } from './utils'
 
-/* istanbul ignore next */
-const requireProcessEnv = (name) => {
-  if (!process.env[name]) {
-    throw new Error('You must set the ' + name + ' environment variable')
-  }
-  return process.env[name]
-}
-
-/* istanbul ignore next */
 if (process.env.NODE_ENV !== 'production') {
   const dotenv = require('dotenv-safe')
   dotenv.config({
@@ -20,8 +12,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const config = {
   all: {
-    env: process.env.NODE_ENV || 'development',
-    port: process.env.PORT || 9000,
+    env: process.env.NODE_ENV,
+    port: process.env.PORT,
     defaultEmail: 'no-reply@hyperhaxapi.com',
     adminEmail: 'admin@hyperhax.com',
     baseNamespace: requireProcessEnv('BASE_NAMESPACE'),
@@ -48,9 +40,8 @@ const config = {
     }
   },
   production: {
-    port: process.env.PORT || 3030,
     mongo: {
-      uri: process.env.MONGODB_URI || 'mongodb://localhost/hyperhaxapi'
+      uri: process.env.MONGODB_URI
     }
   }
 }
