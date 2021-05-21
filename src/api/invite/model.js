@@ -50,7 +50,7 @@ inviteSchema.methods = {
   }
 }
 
-inviteSchema.plugin(mongooseKeywords, { path: ['orderID', 'createdBy'] })
+inviteSchema.plugin(mongooseKeywords, { paths: ['orderID', 'createdBy'] })
 const model = mongoose.model('Invite', inviteSchema)
 
 export const schema = model.schema
