@@ -2,10 +2,10 @@ import request from 'supertest'
 import express from 'express'
 import { validate as uuidValidate, v5 as uuid } from 'uuid'
 import { User } from '../user'
-import routes, { Invite } from './index'
 import { signSync } from '../../services/jwt'
-import server from '../../services/express'
 import { baseNamespace } from '../../config'
+import routes, { Invite } from './index'
+import server from '../../services/express'
 
 const app = server(express(), routes)
 let user, seller, support, admin
@@ -45,12 +45,148 @@ beforeEach(async () => {
     createdBy: seller.username,
     orderID: 'ID123453'
   })
+  invite.seller3 = await Invite.create({
+    code: uuid(Math.random().toString(32).substring(2), baseNamespace),
+    role: 'rust',
+    length: 1,
+    createdBy: 'iamarpit',
+    orderID: 'ID123454'
+  })
 
   // sessions
   session.user = signSync({ id: user.id, secret: user.secret, expiry: Date.now() + (1000 * 60 * 60) })
   session.seller = signSync({ id: seller.id, secret: seller.secret, expiry: Date.now() + (1000 * 60 * 60) })
   session.support = signSync({ id: support.id, secret: support.secret, expiry: Date.now() + (1000 * 60 * 60) })
   session.admin = signSync({ id: admin.id, secret: admin.secret, expiry: Date.now() + (1000 * 60 * 60) })
+})
+
+describe('Get All Invites', () => {
+  it('should return Array of all Invites in database - (200, admin)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.admin })
+
+    expect(status).toBe(200)
+    expect(typeof body).toBe('object')
+    expect(Array.isArray(body.rows)).toBeTruthy()
+    expect(body.rows.length).toEqual(5)
+    expect(body.rows.length).toEqual(body.count)
+  })
+  it('should return Array of all Invites in database - (200, support)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.support })
+
+    expect(status).toBe(200)
+    expect(typeof body).toBe('object')
+    expect(Array.isArray(body.rows)).toBeTruthy()
+    expect(body.rows.length).toEqual(5)
+    expect(body.rows.length).toEqual(body.count)
+  })
+  it('should return Array of all Invites in database - (200, seller)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.seller })
+
+    expect(status).toBe(200)
+    expect(typeof body).toBe('object')
+    expect(Array.isArray(body.rows)).toBeTruthy()
+    expect(body.rows.length).toEqual(2)
+    expect(body.rows.length).toEqual(body.count)
+    body.rows.forEach(row => {
+      expect(row.createdBy).toEqual(seller.username)
+    })
+  })
+  it('should return invites with limit and page - (200, admin)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.admin, page: 2, limit: 2 })
+
+    expect(status).toBe(200)
+    expect(Array.isArray(body.rows)).toBe(true)
+    expect(body.rows.length).toBe(2)
+  })
+  it('should return extended queried fields - (200, seller)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.seller, fields: 'role, soldTo' })
+
+    expect(status).toBe(200)
+    expect(Array.isArray(body.rows)).toBe(true)
+    expect(Object.keys(body.rows[0])).toEqual(['_id', 'role', 'soldTo'])
+  })
+  it('should not return extended queried fields - (200, admin)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.admin, fields: 'role, soldTo' })
+
+    expect(status).toBe(200)
+    expect(Array.isArray(body.rows)).toBe(true)
+    expect(Object.keys(body.rows[0])).toEqual(['_id', 'role'])
+  })
+  it('should return queried fields only  - (200, admin)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.admin, fields: 'role, length' })
+
+    expect(status).toBe(200)
+    expect(Array.isArray(body.rows)).toBe(true)
+    expect(Object.keys(body.rows[0])).toEqual(['_id', 'role', 'length'])
+  })
+  it('should return invites with sorting - (200, admin)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.admin, sort: 'orderID' })
+
+    expect(status).toBe(200)
+    expect(Array.isArray(body.rows)).toBe(true)
+    expect(body.rows[1].orderID).toBe('ID123451')
+  })
+  it('should return invites by username  - (200, admin)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.admin, q: seller.username })
+
+    expect(status).toBe(200)
+    expect(Array.isArray(body.rows)).toBe(true)
+    expect(body.rows.length).toBe(2)
+  })
+  it('should return invites by orderID   - (200, admin)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.admin, q: invite.seller.orderID })
+
+    expect(status).toBe(200)
+    expect(Array.isArray(body.rows)).toBe(true)
+    expect(body.rows.length).toBe(1)
+    expect(body.rows[0].orderID).toBe(invite.seller.orderID)
+  })
+  it('should return not invites for other user - (200, seller)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .query({ access_token: session.seller, q: 'iamarpit' })
+
+    expect(status).toBe(200)
+    expect(Array.isArray(body.rows)).toBe(true)
+    expect(body.rows.length).toBe(0)
+  })
+  it('should throw Forbidden - (403, user)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+      .send({ access_token: session.user })
+
+    expect(status).toEqual(403)
+    expect(typeof body).toEqual('object')
+    expect(body.message).toEqual('Access Denied')
+  })
+  it('should throw Forbidden - (403, no Auth)', async () => {
+    const { status, body } = await request(app)
+      .get('/')
+
+    expect(status).toEqual(403)
+    expect(typeof body).toEqual('object')
+    expect(body.message).toEqual('Access Denied')
+  })
 })
 
 describe('Get Invites by ID', () => {
