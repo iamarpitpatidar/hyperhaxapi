@@ -3,6 +3,9 @@
   "extends": [
     "standard"
   ],
+  "plugins": [
+    "import"
+  ],
   "env": {
     "jest": true,
     "jasmine": true,
