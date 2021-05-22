@@ -14,7 +14,7 @@ export const password = (req, res, next) =>
       if (user.hardwareID === req.body.hardwareID) {
         req.logIn(user, { session: false }, (err) => {
           if (err) return res.status(500).end()
-          next()
+          return next()
         })
       } else return res.status(401).json({ message: 'Your hardwareID does not match the one in server' })
     } else Object.assign(user, { hardwareID: req.body.hardwareID }).save()
@@ -29,7 +29,7 @@ export const token = ({ required, roles = User.roles } = {}) => (req, res, next)
 
     req.logIn(user, { session: false }, (err) => {
       if (err) return res.status(401).end()
-      next()
+      return next()
     })
   })(req, res, next)
 

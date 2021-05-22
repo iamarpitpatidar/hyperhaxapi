@@ -16,7 +16,7 @@ const strategy = new Strategy({
 
   User.findById(id).then(user => {
     if (secret !== user.secret) return next('INVALID_TOKEN')
-    next(null, user)
+    return next(null, user)
   }).catch(next)
 })
 
