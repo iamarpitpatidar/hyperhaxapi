@@ -5,7 +5,7 @@ import routes from './index'
 const app = express()
 app.use('/', routes)
 
-test('GET / 200', async () => {
+test('should return api status', async () => {
   const { status, body } = await request(app)
     .get('/')
 
