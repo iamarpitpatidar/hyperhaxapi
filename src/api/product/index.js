@@ -1,10 +1,10 @@
 import { Router } from 'express'
+import { index } from './controller'
+export Product, { schema } from './model'
 
 const router = new Router()
 
 router.route('/')
-  .get((req, res, next) => {
-    res.send('This is product route')
-  })
+  .get(index)
 
 export default router
