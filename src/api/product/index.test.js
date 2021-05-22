@@ -7,7 +7,7 @@ const app = server(express(), routes)
 const products = []
 
 beforeEach(async () => {
-  for (let num = 1; num < 10; num++) {
+  for (let num = 1; num < 5; num++) {
     const product = await Product.create({
       name: `Product${num}`,
       description: `description${num}`,
@@ -26,5 +26,5 @@ test('should return Array of all products - (200, no Auth)', async () => {
 
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
-  expect(body.rows.length).toBe(9)
+  expect(body.rows.length).toBe(4)
 })
