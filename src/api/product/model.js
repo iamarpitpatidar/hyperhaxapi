@@ -28,6 +28,11 @@ const productSchema = new Schema({
     unique: true,
     index: true,
     required: true
+  },
+  gateways: {
+    type: [String],
+    enum: ['PAYPAL', 'BITCOIN', 'ETHEREUM', 'LITECOIN', 'PERFECT_MONEY', 'BITCOIN_CASH', 'SKRILL', 'STRIPE', 'CASH_APP'],
+    required: true
   }
 }, { timestamps: true })
 
