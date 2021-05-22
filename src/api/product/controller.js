@@ -1,6 +1,7 @@
+import mongoose from 'mongoose'
 import { Product } from './index'
-import { success } from '../../services/response'
 import { sellix } from '../../utils'
+import { notFound, success } from '../../services/response'
 
 export const index = (req, res, next) => {
   Product.find()
@@ -12,12 +13,19 @@ export const index = (req, res, next) => {
     .catch(next)
 }
 
+export const show = (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) return notFound(res)(null)
+  Product.findById(req.params.id)
+    .then(notFound(res))
+    .then(success(res))
+    .catch(next)
+}
+
 export const purge = (req, res, next) => {
   Product.deleteMany({})
     .then(() => sellix.getAllProducts())
     .then(products => {
       products.forEach(async product => {
-        console.log(product)
         await Product.create({
           name: product.title,
           description: product.description,
