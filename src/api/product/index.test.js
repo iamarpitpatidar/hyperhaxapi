@@ -31,6 +31,7 @@ beforeEach(async () => {
     })
     products.push(product)
   }
+  console.log(products[0]._id)
 })
 
 test('should return Array of all products - (200, no Auth)', async () => {
@@ -41,14 +42,19 @@ test('should return Array of all products - (200, no Auth)', async () => {
   expect(typeof body).toBe('object')
   expect(body.rows.length).toBe(4)
 })
+test('should throw Not Found - (404, no Auth)', async () => {
+  const { status } = await request(app)
+    .get('/invalid')
+
+  expect(status).toEqual(404)
+})
 
 describe('Purge cached products', () => {
-  it('should purge all products and add new ones', async () => {
+  it('should purge all products and add new ones - (200, no Auth)', async () => {
     const { status, body } = await request(app)
       .delete('/')
       .send({ access_token: session.admin })
 
-    console.log(body)
     expect(status).toBe(200)
     expect(typeof body).toBe('object')
     expect(body.message).toBe('Purge completed')
