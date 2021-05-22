@@ -1,6 +1,12 @@
 import path from 'path'
 import merge from 'lodash/merge'
-import { requireProcessEnv } from './utils'
+
+const requireProcessEnv = (name) => {
+  if (!process.env[name]) {
+    throw new Error('You must set the ' + name + ' environment variable')
+  }
+  return process.env[name]
+}
 
 if (process.env.NODE_ENV !== 'production') {
   const dotenv = require('dotenv-safe')
@@ -16,6 +22,7 @@ const config = {
     port: process.env.PORT,
     defaultEmail: 'no-reply@hyperhaxapi.com',
     adminEmail: 'admin@hyperhax.com',
+    sellixApiKey: requireProcessEnv('SELLIX_API_KEY'),
     baseNamespace: requireProcessEnv('BASE_NAMESPACE'),
     masterKey: requireProcessEnv('MASTER_KEY'),
     jwtSecret: requireProcessEnv('JWT_SECRET'),
