@@ -31,7 +31,6 @@ beforeEach(async () => {
     })
     products.push(product)
   }
-  console.log(products[0]._id)
 })
 
 test('should return Array of all products - (200, no Auth)', async () => {
